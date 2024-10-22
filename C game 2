@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <conio.h>  // _kbhit(), _getch() 사용
+#include <windows.h> // Sleep() 사용
+#include <stdbool.h>
+
+#define SCREEN_WIDTH 40
+#define SCREEN_HEIGHT 20
+#define PLAYER_Y (SCREEN_HEIGHT - 1)
+
+int playerX = SCREEN_WIDTH / 2;  // 플레이어 초기 위치
+int bulletX = -1, bulletY = -1;  // 총알 초기 위치 (발사되지 않음)
+int enemyX = SCREEN_WIDTH / 2, enemyY = 0;  // 적 초기 위치
+int score = 0;  // 점수
+
+// 콘솔에서 커서 이동
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+// 화면 그리기
+void drawScreen() {
+    system("cls");  // 화면 지우기
+
+    // 적 그리기
+    gotoxy(enemyX, enemyY);
+    printf("@");
+
+    // 플레이어 그리기
+    gotoxy(playerX, PLAYER_Y);
+    printf("^");
+
+    // 총알 그리기
+    if (bulletY != -1) {
+        gotoxy(bulletX, bulletY);
+        printf("|");
+    }
+
+    // 점수 표시
+    gotoxy(0, SCREEN_HEIGHT);
+    printf("Score: %d", score);
+}
+
+// 적 초기화
+void resetEnemy() {
+    enemyX = rand() % SCREEN_WIDTH;
+    enemyY = 0;
+}
+
+// 입력 처리
+void handleInput() {
+    if (_kbhit()) {
+        char input = _
