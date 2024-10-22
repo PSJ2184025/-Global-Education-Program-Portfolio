@@ -1,0 +1,93 @@
+//C
+//공룡게임 만들기
+
+#include <stdio.h>
+#include <conio.h>  // _kbhit()와 _getch() 함수를 사용하기 위한 헤더
+#include <windows.h> // Sleep() 함수 사용
+#include <stdbool.h>
+
+#define GROUND_Y 10 // 공룡이 서있는 Y좌표
+#define JUMP_HEIGHT 3 // 공룡이 점프하는 높이
+#define OBSTACLE_X 40 // 장애물이 나타나는 X좌표
+
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void drawDino(int y) {
+    gotoxy(5, y);
+    printf("D");  // 공룡을 'D'로 표시
+}
+
+void clearDino(int y) {
+    gotoxy(5, y);
+    printf(" ");  // 공룡 지우기
+}
+
+void drawObstacle(int x) {
+    gotoxy(x, GROUND_Y);
+    printf("#");  // 장애물을 '#'로 표시
+}
+
+void clearObstacle(int x) {
+    gotoxy(x, GROUND_Y);
+    printf(" ");  // 장애물 지우기
+}
+
+int main() {
+    int dinoY = GROUND_Y;
+    int obstacleX = OBSTACLE_X;
+    bool isJumping = false;
+    int jumpCount = 0;
+
+    printf("공룡 게임! 스페이스바를 눌러 점프하세요.\n");
+
+    while (1) {
+        // 장애물 그리기
+        clearObstacle(obstacleX);
+        obstacleX--;
+
+        if (obstacleX < 0) {
+            obstacleX = OBSTACLE_X;  // 장애물이 화면 왼쪽으로 나가면 다시 오른쪽에서 등장
+        }
+
+        drawObstacle(obstacleX);
+
+        // 공룡 점프 처리
+        if (_kbhit()) {
+            char input = _getch();
+            if (input == ' ') {
+                isJumping = true;
+            }
+        }
+
+        if (isJumping) {
+            clearDino(dinoY);
+            if (jumpCount < JUMP_HEIGHT) {
+                dinoY--;  // 위로 이동
+                jumpCount++;
+            } else if (jumpCount < JUMP_HEIGHT * 2) {
+                dinoY++;  // 아래로 이동
+                jumpCount++;
+            } else {
+                isJumping = false;
+                jumpCount = 0;
+            }
+            drawDino(dinoY);
+        }
+
+        // 충돌 검사 (공룡이 땅에 있을 때만 충돌 체크)
+        if (obstacleX == 5 && dinoY == GROUND_Y) {
+            gotoxy(0, GROUND_Y + 2);
+            printf("게임 오버!\n");
+            break;
+        }
+
+        Sleep(100);  // 게임 속도 조절
+    }
+
+    return 0;
+}
