@@ -1,0 +1,35 @@
+//C++
+//숫자 맞추기 게임
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+
+int main() {
+    
+    std::srand(static_cast<unsigned int>(std::time(0)));
+    
+    
+    int targetNumber = std::rand() % 100 + 1;
+    int guess;
+    int attempts = 0;
+
+    std::cout << "1부터 100까지의 숫자 중 하나를 맞춰보세요!" << std::endl;
+
+    
+    do {
+        std::cout << "숫자를 입력하세요: ";
+        std::cin >> guess;
+        attempts++;
+
+        if (guess > targetNumber) {
+            std::cout << "입력한 숫자가 너무 큽니다." << std::endl;
+        } else if (guess < targetNumber) {
+            std::cout << "입력한 숫자가 너무 작습니다." << std::endl;
+        } else {
+            std::cout << "정답입니다! 시도한 횟수: " << attempts << std::endl;
+        }
+    } while (guess != targetNumber);
+
+    return 0;
+}
